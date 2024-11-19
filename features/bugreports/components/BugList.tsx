@@ -99,20 +99,16 @@ export default function BugList({ bugs, onStatusChange, onEdit }: BugListProps) 
                     >
                       <Maximize2 size={18} />
                     </button>
-                    <BugActions
-                      bug={bug}
-                      onStatusChange={onStatusChange}
-                      onEdit={onEdit}
-                    />
+                    <BugActions bug={bug} onStatusChange={onStatusChange} onEdit={onEdit} />
                   </div>
                 </div>
                 <div
-                  className="prose prose-sm lg:prose-base prose-headings:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 mt-4 max-w-none text-gray-600"
+                  className="prose prose-sm lg:prose-base prose-headings:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 mt-4 line-clamp-6 max-w-none text-gray-600"
                   dangerouslySetInnerHTML={{ __html: bug.description }}
                 />
 
                 {bug.images && bug.images.length > 0 && (
-                  <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <div className="mt-4 grid max-h-[300px] grid-cols-1 gap-4 overflow-y-auto lg:grid-cols-2">
                     {bug.images.map((image, index) => (
                       <div key={index} className="relative">
                         <img

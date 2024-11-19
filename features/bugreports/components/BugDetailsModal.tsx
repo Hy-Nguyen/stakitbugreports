@@ -21,9 +21,9 @@ export default function BugDetailsModal({ bug, isOpen, onClose }: BugDetailsModa
         >
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
-              <div className="w-full max-w-4xl rounded-lg bg-white">
+              <div className="max-h-[75dvh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white">
                 <div className="flex items-center justify-between border-b p-6">
-                  <h2 className="text-2xl font-semibold text-gray-900">{bug.title}</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900">{bug.title} </h2>
                   <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
                     <X size={24} />
                   </button>
