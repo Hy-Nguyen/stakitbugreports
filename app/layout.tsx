@@ -6,8 +6,8 @@ import LayoutWrapper from '@/components/layout/LayoutWrapper';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'NextJS Template - Hy Nguyen',
-  description: 'NextJS Template - Hy Nguyen',
+  title: 'Stakit Bug Reports',
+  description: 'Stakit Bug Reports',
 };
 
 export default function RootLayout({
