@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { Bug } from '@/features/bugreports/type';
 type ResponseData = {
-  data?: Bug[];
+  data?: Omit<Bug, 'images'>[];
   error?: string;
 };
 
