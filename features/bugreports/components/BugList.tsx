@@ -102,24 +102,23 @@ export default function BugList({ bugs, onStatusChange, onEdit }: BugListProps) 
                     <BugActions bug={bug} onStatusChange={onStatusChange} onEdit={onEdit} />
                   </div>
                 </div>
+                {bug.dev_note && (
+                  <div className="py-2">
+                    <h1 className="text-base font-semibold text-gray-600">Note From Dev:</h1>
+                    <p className="text-base text-gray-500">{bug.dev_note}</p>
+                  </div>
+                )}
                 <div
                   className="prose prose-sm lg:prose-base prose-headings:text-gray-900 prose-a:text-blue-600 hover:prose-a:text-blue-800 mt-4 line-clamp-6 max-w-none text-gray-600"
                   dangerouslySetInnerHTML={{ __html: bug.description }}
                 />
 
-                {bug.images && bug.images.length > 0 && (
-                  <div className="mt-4 grid max-h-[300px] grid-cols-1 gap-4 overflow-y-auto lg:grid-cols-2">
-                    {bug.images.map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={image}
-                          alt={`Bug screenshot ${index + 1}`}
-                          className="h-48 w-full rounded-lg object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <h1
+                  onClick={() => setSelectedBug(bug)}
+                  className="mt-2 cursor-pointer text-sm text-gray-500 transition-all hover:text-blue-600 hover:underline"
+                >
+                  {bug.image_count ? `${bug.image_count} images attached` : 'No images attached'}
+                </h1>
               </div>
             ))
           )}

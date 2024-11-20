@@ -27,6 +27,9 @@ interface BugContextType {
   handleDelete: (bug: Bug) => Promise<boolean>;
   isDeleting: boolean;
   setIsDeleting: (isDeleting: boolean) => void;
+  fetchImages: (id: string | undefined) => Promise<string[]>;
+  loadingImages: boolean;
+  setLoadingImages: (loading: boolean) => void;
 }
 
 const BugContext = createContext<BugContextType | undefined>(undefined);
@@ -40,11 +43,32 @@ export const BugProvider = ({ children }: { children: ReactNode }) => {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [loadingImages, setLoadingImages] = useState(true);
+
   const fetchBugs = async () => {
     setIsLoading(true);
     const { data } = await axios.get('/api/getBugs');
     setBugs(data?.data ?? []);
     setIsLoading(false);
+  };
+
+  const fetchImages = async (id: string | undefined) => {
+    if (!id) {
+      toast.error('No ID provided');
+      return [];
+    }
+    setLoadingImages(true);
+    const response = await axios.get('/api/getImageByID', {
+      params: { id },
+    });
+    if (response.status === 200) {
+      setLoadingImages(false);
+      return response.data.images ?? [];
+    } else {
+      setLoadingImages(false);
+      toast.error('Failed to fetch images');
+      return [];
+    }
   };
 
   const handleAddBug = async (bug: Bug) => {
@@ -153,6 +177,9 @@ export const BugProvider = ({ children }: { children: ReactNode }) => {
         handleDelete,
         isDeleting,
         setIsDeleting,
+        fetchImages,
+        loadingImages,
+        setLoadingImages,
       }}
     >
       {children}

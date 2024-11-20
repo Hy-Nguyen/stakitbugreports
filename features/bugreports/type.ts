@@ -12,4 +12,6 @@ export interface Bug {
   status: BugStatus;
   createdAt?: Date;
   resolvedAt?: Date;
+  image_count?: number;
+  dev_note?: string;
 }

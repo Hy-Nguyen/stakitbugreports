@@ -20,7 +20,7 @@ interface BugModalProps {
 }
 
 export default function BugModal({ isOpen, onClose, onSubmit, category, editingBug, isSubmitting }: BugModalProps) {
-  const initialFormData = {
+  const initialFormData: Bug = {
     title: '',
     author: '',
     url: '',
@@ -34,6 +34,19 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedCategory, setSelectedCategory] = useState<BugCategory>(category);
   const { handleDelete, isDeleting } = useBugContext();
+
+  const { fetchImages, loadingImages } = useBugContext();
+
+  useEffect(() => {
+    const fetchAndSetImages = async () => {
+      if (isOpen && editingBug) {
+        const imageFetch = await fetchImages(editingBug.id);
+        setFormData((prev) => ({ ...prev, images: imageFetch }));
+      }
+    };
+
+    fetchAndSetImages();
+  }, [isOpen, editingBug]);
 
   useEffect(() => {
     setFormData(editingBug || initialFormData);
@@ -177,7 +190,6 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
                 error={errors.title}
                 placeholder="Enter a title for your bug report"
               />
-
               <CategorySection />
               <InputField
                 label="Author"
@@ -195,6 +207,14 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
                 error={errors.url}
                 placeholder="https://stakit.com/wtf"
               />
+              {editingBug && (
+                <InputField
+                  label="Note From Dev"
+                  type="text"
+                  value={formData.dev_note || ''}
+                  passedOnChange={(value: string) => setFormData((prev) => ({ ...prev, dev_note: value }))}
+                />
+              )}
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
                 <RichTextEditor
@@ -203,11 +223,18 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
                 />
                 <ErrorMessage error={errors.description} />
               </div>
-              <ImageUploadSection
-                images={formData.images}
-                onImageUpload={handleImageUpload}
-                onDeleteImage={handleDeleteImage}
-              />
+              {editingBug && loadingImages ? (
+                <div className="flex w-full flex-col items-center justify-center">
+                  <Loader2 size={24} className="animate-spin" />
+                  <h1>Getting Images</h1>
+                </div>
+              ) : (
+                <ImageUploadSection
+                  images={formData.images}
+                  onImageUpload={handleImageUpload}
+                  onDeleteImage={handleDeleteImage}
+                />
+              )}
               <div className="mt-6 flex justify-end gap-4">
                 <button
                   type="button"

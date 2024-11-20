@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bug } from '../type';
-import { X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import { useBugContext } from '../provider/BugDashboardContext';
+import { useEffect, useState } from 'react';
 
 interface BugDetailsModalProps {
   bug: Bug;
@@ -9,6 +11,20 @@ interface BugDetailsModalProps {
 }
 
 export default function BugDetailsModal({ bug, isOpen, onClose }: BugDetailsModalProps) {
+  const { fetchImages, loadingImages } = useBugContext();
+  const [images, setImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchAndSetImages = async () => {
+      if (isOpen) {
+        const imageFetch = await fetchImages(bug.id);
+        setImages(imageFetch);
+      }
+    };
+
+    fetchAndSetImages();
+  }, [isOpen, bug]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -41,9 +57,14 @@ export default function BugDetailsModal({ bug, isOpen, onClose }: BugDetailsModa
 
                   <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: bug.description }} />
 
-                  {bug.images && bug.images.length > 0 && (
+                  {loadingImages ? (
+                    <div className="row flex items-center justify-center gap-2">
+                      <h1>Fetching Images</h1>
+                      <Loader2 size={24} className="animate-spin" />
+                    </div>
+                  ) : images && images.length > 0 ? (
                     <div className="space-y-4">
-                      {bug.images.map((image, index) => (
+                      {images.map((image, index) => (
                         <div key={index} className="overflow-hidden rounded-lg">
                           <img
                             src={image}
@@ -52,6 +73,10 @@ export default function BugDetailsModal({ bug, isOpen, onClose }: BugDetailsModa
                           />
                         </div>
                       ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center">
+                      <h1>No images found</h1>
                     </div>
                   )}
                 </div>
