@@ -8,7 +8,10 @@ type ResponseData = {
 
 export async function GET(): Promise<NextResponse<ResponseData>> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from('stakit_bugs').select('*').order('updated_at', { ascending: false });
+  const { data, error } = await supabase
+    .from('stakit_bugs')
+    .select('id, title, url, description, category, status, created_at, updated_at, author, resolved_at')
+    .order('updated_at', { ascending: false });
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   } else {

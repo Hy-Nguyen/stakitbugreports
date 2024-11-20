@@ -24,9 +24,9 @@ export default function BugDashboard() {
     fetchBugs,
   } = useBugContext();
 
-  useEffect(() => {
-    fetchBugs();
-  }, []);
+  // useEffect(() => {
+  //   fetchBugs();
+  // }, []);
 
   const filteredBugs = bugs.filter((bug) => bug.category === selectedCategory);
 
