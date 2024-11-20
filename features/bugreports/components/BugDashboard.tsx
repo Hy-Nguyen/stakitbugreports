@@ -5,7 +5,7 @@ import { useBugContext } from '../provider/BugDashboardContext';
 import BugList from './BugList';
 import BugModal from './BugModal';
 import CategoryToggle from './CategoryToggle';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 export default function BugDashboard() {
@@ -13,6 +13,7 @@ export default function BugDashboard() {
     isModalOpen,
     setIsModalOpen,
     bugs,
+    setBugs,
     selectedCategory,
     setSelectedCategory,
     editingBug,
@@ -24,9 +25,23 @@ export default function BugDashboard() {
     fetchBugs,
   } = useBugContext();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   useEffect(() => {
-    fetchBugs();
-  }, []);
+    fetchBugs(currentPage, 10);
+  }, [currentPage]);
+
+  const loadMoreBugs = async () => {
+    const newPage = currentPage + 1;
+    const newBugs = await fetchBugs(newPage);
+    if (newBugs.length > 0) {
+      setBugs((prevBugs) => [...prevBugs, ...newBugs]);
+      setCurrentPage(newPage);
+    } else {
+      setHasMore(false);
+    }
+  };
 
   const filteredBugs = bugs.filter((bug) => bug.category === selectedCategory);
 
@@ -36,7 +51,7 @@ export default function BugDashboard() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
           <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">Bug Reports</h1>
           <CategoryToggle selectedCategory={selectedCategory} onToggle={setSelectedCategory} />
-          <button onClick={() => fetchBugs()} className="rounded-md bg-blue-600 px-4 py-2 text-white">
+          <button onClick={() => fetchBugs(currentPage, 10)} className="rounded-md bg-blue-600 px-4 py-2 text-white">
             Refresh
           </button>
         </div>
@@ -53,6 +68,12 @@ export default function BugDashboard() {
       </div>
 
       <BugList bugs={filteredBugs} onStatusChange={handleStatusChange} onEdit={handleEdit} />
+
+      {hasMore && (
+        <button onClick={loadMoreBugs} className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-white">
+          Load More
+        </button>
+      )}
 
       <BugModal
         isOpen={isModalOpen}

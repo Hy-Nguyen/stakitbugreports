@@ -19,7 +19,7 @@ interface BugContextType {
   handleAddBug: (bug: Bug) => Promise<void>;
   handleStatusChange: (bug: Bug, status: BugStatus) => Promise<void>;
   handleEdit: (bug: Bug) => void;
-  fetchBugs: () => Promise<void>;
+  fetchBugs: (page: number, limit?: number) => Promise<Bug[]>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   isUpdatingStatus: boolean;
@@ -40,11 +40,18 @@ export const BugProvider = ({ children }: { children: ReactNode }) => {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
-  const fetchBugs = async () => {
+
+  const fetchBugs = async (page = 1, limit = 10) => {
     setIsLoading(true);
-    const { data } = await axios.get('/api/getBugs');
+    const { data } = await axios.get('/api/getBugs', {
+      params: {
+        page,
+        limit,
+      },
+    });
     setBugs(data?.data ?? []);
     setIsLoading(false);
+    return data?.data ?? [];
   };
 
   const handleAddBug = async (bug: Bug) => {
