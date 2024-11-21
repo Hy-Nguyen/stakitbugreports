@@ -17,9 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <SpeedInsights />
       <body className={inter.className}>
-        <LayoutWrapper>{children}</LayoutWrapper>
+        <LayoutWrapper>
+          {children}
+          <SpeedInsights />
+        </LayoutWrapper>
       </body>
     </html>
   );
