@@ -1,5 +1,5 @@
 export type BugCategory = 'frontend' | 'backend';
-export type BugStatus = 'open' | 'in-progress' | 'resolved';
+export type BugStatus = 'open' | 'in-progress' | 'resolved' | 'need-review';
 
 export interface Bug {
   id?: string;

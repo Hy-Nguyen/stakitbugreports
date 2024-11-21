@@ -125,11 +125,12 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, updateAndReview?: boolean) => {
     e.preventDefault();
     if (validateForm()) {
       onSubmit({
         ...formData,
+        ...(updateAndReview && { status: 'need-review' }),
       });
       setFormData(initialFormData);
     }
@@ -274,6 +275,15 @@ export default function BugModal({ isOpen, onClose, onSubmit, category, editingB
                     'Submit Bug Report'
                   )}
                 </button>
+                {editingBug && (
+                  <button
+                    type="button"
+                    onClick={(e) => handleSubmit(e, true)}
+                    className="rounded-lg bg-yellow-500 px-4 py-2 text-black hover:bg-yellow-600"
+                  >
+                    Update and Review
+                  </button>
+                )}
               </div>
             </form>
           </div>
